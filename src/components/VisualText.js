@@ -5,7 +5,7 @@ import ReactECharts from 'echarts-for-react';
 
 const mathQuestions = [
     [
-        "The profit from a business transaction is shared among 2 business partners, Mike and Johnson in the ratio 2:5 respectively. If Johnson got $2500, how much will Mike have after spending some of his share on a shirt that costs $200?",
+        "The profit is shared among 2 business partners, Mike and Johnson in the ratio 2:5 respectively. If Johnson got $2500, how much will Mike have after spending some of his share on a shirt that costs $200?",
         "Mike and Johnson share the profit in a 2:5 ratio. If Johnson receives $2500 and Mike spends $200 on a shirt, how much will Mike have left?",
         "Two business partners, Mike and Johnson, share the profit from a business transaction in the ratio 2:5. If Johnson received $2500, how much will Mike have left after spending $200 on a shirt?",
         "Two business partners, Mike and Johnson, share the profit from a business transaction in a ratio of 2:5. If Johnson received $2500, what amount will Mike have left after spending $200 on a shirt?",
