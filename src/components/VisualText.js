@@ -290,14 +290,14 @@ const scienceQuestions = [
 
 class VisualText extends Component {
     state = {
-        dataset: 'math',
-        questionNumber: 0,
+        dataset: 'science',
+        questionNumber: 20,
         simplificationLevel: 0,
-        textVersions: mathQuestions[0] || ["", "", "", ""],
-        currentText: mathQuestions[0] ? mathQuestions[0][1] : "",
+        textVersions: scienceQuestions[20] || ["", "", "", ""],
+        currentText: scienceQuestions[20] ? scienceQuestions[20][1] : "",
         original_lines: [],
         lines: [],
-        key: 'math-0',
+        key: 'science-20',
         showAnswer: false,
         chartData: null,
         highlightedBar: null,
@@ -541,6 +541,7 @@ class VisualText extends Component {
 
         this.setInitialText();
         this.setChartData(this.state.dataset, this.state.questionNumber);
+        this.highlightBar(0);
     }
 
     setChartData(dataset, questionNumber) {
