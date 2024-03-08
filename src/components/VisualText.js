@@ -292,7 +292,7 @@ class VisualText extends Component {
     state = {
         dataset: 'math',
         questionNumber: 0,
-        simplificationLevel: 1,
+        simplificationLevel: 0,
         textVersions: mathQuestions[0] || ["", "", "", ""],
         currentText: mathQuestions[0] ? mathQuestions[0][1] : "",
         original_lines: [],
@@ -427,6 +427,7 @@ class VisualText extends Component {
         }
     };
     orig_ref = React.createRef();
+    
 
     highlightBar(level) {
         this.setState({ highlightedBar: level }, () => {
@@ -440,19 +441,24 @@ class VisualText extends Component {
         const chartData = this.getChartData(dataset, questionNumber);
 
         // Apply emphasis style to the highlighted bar
-        chartData.series[0].data = chartData.series[0].data.map((value, index) => ({
+        chartData.series[0].data = chartData.series[0].lexile_data.map((value, index) => ({
             value,
             itemStyle: index === level ? {
-                normal: { color: '#0F52BA', borderColor: '#ADD8E6' },  // TODO condition this based on correct or not
+                // normal: {  color: '#0F52BA', borderColor: '#ADD8E6' },  
+                normal: this.state.correctData[dataset][questionNumber][index] == 1 ? {  color: '#0F52BA', borderColor: '#ADD8E6' } : {  color: '#D70040', borderColor: '#ADD8E6' },  
                 emphasis: { color: '#0F52BA' }
-            } : {},
+            } : {
+                normal: this.state.correctData[dataset][questionNumber][index] == 1 ? {  color: '#0F52BA' } : {  color: '#D70040' },  
+                emphasis: { color: '#0F52BA' }},
         }));
 
         this.setState({ chartData });
     };
 
     getChartData(dataset, questionNumber) {
-        const data = this.state.lexileData[dataset][questionNumber] || [];
+        const correctness_data = this.state.correctData[dataset][questionNumber] || [];
+        const lexile_data = this.state.lexileData[dataset][questionNumber] || [];
+        const data = lexile_data.map(function(lexile_value, index) {return [lexile_value, correctness_data[index]];}) || [];
 
         return {
             grid: {
@@ -508,7 +514,7 @@ class VisualText extends Component {
                 }
             },
             series: [{
-                data,
+                lexile_data,
                 type: 'bar',
                 barWidth: '50%',
 
@@ -563,11 +569,13 @@ class VisualText extends Component {
             textVersions: textVersions[validIndex] || ["", "", "", ""],
             currentText: textVersions[validIndex][1] || "",
             original_lines: this.splitTextIntoLines(textVersions[validIndex][0] || "", 100),
-            lines: this.splitTextIntoLines(textVersions[validIndex][1] || "", 100),
+            lines: this.splitTextIntoLines(textVersions[validIndex][0] || "", 100),
             key: `${dataset}-${validIndex}`,
-            simplificationLevel: 1,
+            simplificationLevel: 0,
             chartData: this.getChartData(dataset, validIndex),
         });
+
+        this.highlightBar(0);
     };
 
     handleQuestionChange = (event) => {
@@ -581,11 +589,13 @@ class VisualText extends Component {
             textVersions: textVersions[validIndex] || ["", "", "", ""],
             currentText: textVersions[validIndex][1] || "",
             original_lines: this.splitTextIntoLines(textVersions[validIndex][0] || "", 100),
-            lines: this.splitTextIntoLines(textVersions[validIndex][1] || "", 100),
+            lines: this.splitTextIntoLines(textVersions[validIndex][0] || "", 100),
             key: `${dataset}-${validIndex}`,
-            simplificationLevel: 1,
+            simplificationLevel: 0,
             chartData: this.getChartData(dataset, validIndex),
         });
+
+        this.highlightBar(0);
     };
 
     handleSliderChange = (event) => {
@@ -595,9 +605,11 @@ class VisualText extends Component {
 
     updateText = (level) => {
         const newText = this.state.textVersions[level] || "";
+        // const correct = this.state.correctness[level] || 1;
         this.setState({
             simplificationLevel: level,
             currentText: newText,
+            // correct: correct,
             original_lines: this.splitTextIntoLines(this.state.textVersions[0], 100),
             lines: this.splitTextIntoLines(newText, 100)
         });
